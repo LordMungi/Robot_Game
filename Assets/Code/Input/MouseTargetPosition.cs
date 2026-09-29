@@ -1,39 +1,41 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
-public class MouseTargetPosition : MonoBehaviour
+public class MouseTargetPosition 
 {
-    private Camera _mainCamera;
-    private Plane _groundPlane;
+    private Transform _head;
+    private Transform[] _body; 
     
-   private void Start()
+    private Transform _robot; 
+
+    private float _headRotationSpeed = 25.0f; 
+    private float _bodyRotationSpeed = 5.0f;  
+    
+    private Camera _mainCamera;
+
+    public MouseTargetPosition(ref PlayerParents parents)
     {
-        Cursor.visible = false;
+        // _head = parents.headParent;
+        // _body = parents.bodyParent; 
         
+       _robot = parents.auxRobot; 
+
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
         _mainCamera = Camera.main;
-        _groundPlane = new Plane(Vector3.up, Vector3.zero);
     }
 
-    private void Update()
+    public void Update()
     {
-        if (Mouse.current == null) 
-            return;
+        Vector3 cameraForward = _mainCamera.transform.forward;
 
-        Vector2 mouseScreenPosition = Mouse.current.position.ReadValue();
-
-        Ray ray = _mainCamera.ScreenPointToRay(mouseScreenPosition);
-
-        if (_groundPlane.Raycast(ray, out float rayDistance))
+        if (cameraForward.sqrMagnitude > 0.05f)
         {
-            Vector3 hitPoint = ray.GetPoint(rayDistance);
-            Vector3 lookDirection = hitPoint - transform.position;
-            
-            lookDirection.y = 0; 
+            Quaternion targetRotation = Quaternion.LookRotation(cameraForward.normalized);
 
-            if (lookDirection.sqrMagnitude > 0.05f)
-            {
-                transform.rotation = Quaternion.LookRotation(lookDirection);
-            }
+            // _headPivot.rotation = Quaternion.Slerp(_headPivot.rotation, targetRotation, _headRotationSpeed * Time.deltaTime);
+            // _bodyPivot.rotation = Quaternion.Slerp(_bodyPivot.rotation, targetRotation, _bodyRotationSpeed * Time.deltaTime);
+            
+            _robot.rotation = Quaternion.Slerp(_robot.rotation, targetRotation, _bodyRotationSpeed * Time.deltaTime);
         }
     }
 }

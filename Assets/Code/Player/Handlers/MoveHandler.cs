@@ -19,6 +19,8 @@ public class MoveHandler : PlayerHandler
 
     private const float _gravity = -9.81f;
     
+    private Vector3 _currentMoveDirection = Vector3.zero;
+    
     public MoveHandler(CharacterController controller, Data data)
     {
         _controller = controller;
@@ -27,32 +29,32 @@ public class MoveHandler : PlayerHandler
 
     public void Move(Vector2 direction)
     {
-        _controller.Move(new Vector3(direction.x, 0, direction.y) * _data.speed * Time.deltaTime);
+        _controller.Move(direction * _data.speed * Time.deltaTime);
     }
-
     public void Fall()
     {
-        if (_controller.isGrounded)
+        if (_controller.isGrounded && _currentVelocityY < 0f)
         {
-            _currentVelocityY = 0f;
+            _currentVelocityY = -2f; 
             
             if (!_wasGrounded)
                 EventBus.Raise<OnPlayerLanded>();
-            Debug.Log("Grounded");
         }
         else
         {
             _currentVelocityY += _gravity * Time.deltaTime;
-            Debug.Log("Fall");
         }
+        
         _wasGrounded = _controller.isGrounded;
-
-        _controller.Move(new Vector3(0, _data.speed * _currentVelocityY * Time.deltaTime, 0));
+        
+        _controller.Move(new Vector3(0, _currentVelocityY * Time.deltaTime, 0));
     }
 
     public void Jump()
     {
-        _currentVelocityY = Mathf.Sqrt(_data.jumpForce * -2f * _gravity);
-        _controller.Move(_data.speed * _currentVelocityY * Time.deltaTime * Vector3.up);
+        if (_controller.isGrounded)
+        {
+            _currentVelocityY = Mathf.Sqrt(_data.jumpForce * -2f * _gravity);
+        }
     }
 }

@@ -7,4 +7,8 @@ using UnityEngine;
     public Transform handParent;
     public Transform legPartParent;
     public Transform armPartParent;
+    public Transform headParent;
+    public Transform[] bodyParent;
+
+    public Transform auxRobot;
 }

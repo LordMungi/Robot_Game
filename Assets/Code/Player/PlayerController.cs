@@ -8,6 +8,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private PlayerParents playerParents;
 
     private BehaviourFSM _behaviourFSM;
+    private MouseTargetPosition _mouseTargetPosition;
 
     private void Awake()
     {
@@ -19,10 +20,12 @@ public class PlayerController : MonoBehaviour
         data.config = playerConfig;
 
         _behaviourFSM = new BehaviourFSM(ref data, ref playerParents);
+        _mouseTargetPosition = new MouseTargetPosition(ref playerParents);
     }
 
     void Update()
     {
         _behaviourFSM.CurrentState.Update();
+        _mouseTargetPosition.Update();
     }
 }

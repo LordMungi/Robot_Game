@@ -42,6 +42,7 @@ public class MoveState : PlayerState
 
     public override void Update()
     {
+        Debug.Log($"_playerInput: {_playerInput.Player.Move.ReadValue<Vector2>()}");
         _movementHandler.Move(_playerInput.Player.Move.ReadValue<Vector2>());
         _movementHandler.Fall();
     }
