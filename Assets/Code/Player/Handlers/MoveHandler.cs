@@ -24,9 +24,9 @@ public class MoveHandler : PlayerHandler
         _data = data;
     }
 
-    public void Move(Vector2 direction)
+    public void Move(Vector3 direction)
     {
-        _controller.Move(new Vector3(direction.x, 0, direction.y) * _data.speed * Time.deltaTime);
+        _controller.Move(direction * _data.speed * Time.deltaTime);
     }
 
     public void Fall()

@@ -9,12 +9,14 @@ public class MoveState : PlayerState
     private GrabHandler _grabHandler;
 
     private PlayerInputActions _playerInput;
+    private readonly Transform _cameraTransform;
 
     public MoveState(ref PlayerData data, ref PlayerParents parents)
     {
         _handlers.Add(_movementHandler = new MoveHandler(data.controller, data.config.movingMoveData));
         _handlers.Add(_grabHandler = new GrabHandler(ref parents));
 
+        _cameraTransform = data.cameraTransform;
         _playerInput = new PlayerInputActions();
     }
 
@@ -40,7 +42,19 @@ public class MoveState : PlayerState
 
     public override void Update()
     {
-        _movementHandler.Move(_playerInput.Player.Move.ReadValue<Vector2>());
+        Vector2 input = _playerInput.Player.Move.ReadValue<Vector2>();
+        
+        Vector3 camForward = _cameraTransform.forward;
+        Vector3 camRight = _cameraTransform.right;
+        camForward.y = 0;
+        camRight.y = 0;
+        camForward.Normalize();
+        camRight.Normalize();
+
+        Vector3 moveDirection = (camForward * input.y) + (camRight * input.x);
+
+        _movementHandler.Move(moveDirection);
+        
         _movementHandler.Fall();
     }
 
