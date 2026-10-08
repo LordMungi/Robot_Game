@@ -115,7 +115,7 @@ public class InteractionsHandler : PlayerHandler
             default:                moveVector = new Vector2();
                 break; 
         }
-        _grabbedPushableObejct.Move(moveVector * Time.deltaTime * speed);
+        _grabbedPushableObejct.Move(moveVector * speed);
     }
     public Vector3 GetOffsetedPositionFromPushableObejct()
     {
